@@ -220,7 +220,7 @@
 
 <header>
   <h1>🧮 Học Toán Vui Vẻ 🎉</h1>
-  <p>Dành cho bé từ 5 - 7 tuổi 🧒👧</p>
+  <p>Dành cho bé từ 3 - 5 tuổi 🧒👧</p>
 </header>
 
 <div class="tabs">
@@ -413,7 +413,7 @@ function newMath(type){
     if(isAdd){addTotal++}else{subTotal++}
     if(v===answer){
       if(isAdd){addScore++}else{subScore++}
-      fb.textContent='🎉 Đúng rồi! Giỏi quá!';fb.style.color='#22c55e';
+      fb.textContent='🎉 Đúng rồi! Giỏi quá bé An!';fb.style.color='#22c55e';
       sfxHappy();confetti();
     } else {
       fb.textContent=`❌ Sai rồi! Đáp án là ${answer}`;fb.style.color='#f87171';
@@ -475,7 +475,7 @@ function newCompare(){
       if(answered)return;answered=true;cmpTotal++;
       if(btn.dataset.v===correct){
         btn.classList.add('correct');cmpScore++;sfxHappy();confetti();
-        speak('Chính xác!');
+        speak('Chính xác rồi bé An!');
       } else {
         btn.classList.add('wrong');sfxWrong();
         area.querySelectorAll('.compare-btn').forEach(x=>{if(x.dataset.v===correct)x.classList.add('correct')});
