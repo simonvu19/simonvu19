@@ -220,7 +220,7 @@
 
 <header>
   <h1>🧮 Học Toán Vui Vẻ 🎉</h1>
-  <p>Dành cho bé từ 5 - 7 tuổi 🧒👧</p>
+  <p>Dành cho bé từ 3 - 5 tuổi 🧒👧</p>
 </header>
 
 <div class="tabs">
@@ -475,7 +475,7 @@ function newCompare(){
       if(answered)return;answered=true;cmpTotal++;
       if(btn.dataset.v===correct){
         btn.classList.add('correct');cmpScore++;sfxHappy();confetti();
-        speak('Chính xác!');
+        speak('Chính xác rồi bé An!');
       } else {
         btn.classList.add('wrong');sfxWrong();
         area.querySelectorAll('.compare-btn').forEach(x=>{if(x.dataset.v===correct)x.classList.add('correct')});
