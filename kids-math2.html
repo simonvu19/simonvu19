@@ -274,6 +274,61 @@
   }
   .reward-popup button:hover{transform:scale(1.08)}
 
+  /* Fairy Guide */
+  .fairy-wrap{
+    position:fixed;bottom:20px;right:20px;z-index:500;
+    display:flex;flex-direction:column;align-items:flex-end;gap:8px;
+    pointer-events:none;
+  }
+  .fairy-bubble{
+    max-width:260px;padding:12px 16px;border-radius:18px 18px 4px 18px;
+    background:linear-gradient(135deg,rgba(168,85,247,.9),rgba(236,72,153,.85));
+    backdrop-filter:blur(8px);color:#fff;font-size:15px;font-weight:600;
+    line-height:1.4;box-shadow:0 4px 20px rgba(168,85,247,.4);
+    opacity:0;transform:translateY(10px) scale(.9);
+    transition:all .4s cubic-bezier(.34,1.56,.64,1);
+    pointer-events:auto;
+  }
+  .fairy-bubble.show{opacity:1;transform:translateY(0) scale(1)}
+  .fairy-bubble::after{
+    content:'';position:absolute;bottom:8px;right:-6px;
+    border:6px solid transparent;border-left-color:rgba(236,72,153,.85);
+  }
+  .fairy-char{
+    width:80px;height:80px;cursor:pointer;pointer-events:auto;
+    position:relative;animation:fairyFloat 3s ease-in-out infinite;
+    transition:transform .3s;
+    filter:drop-shadow(0 4px 15px rgba(168,85,247,.5));
+  }
+  .fairy-char:hover{transform:scale(1.15)}
+  .fairy-char:active{transform:scale(.95)}
+  @keyframes fairyFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .fairy-body{font-size:60px;display:block;text-align:center;line-height:80px}
+  .fairy-wand{
+    position:absolute;top:-2px;right:-8px;font-size:22px;
+    animation:wandSparkle 2s ease-in-out infinite;
+  }
+  @keyframes wandSparkle{0%,100%{transform:rotate(-10deg) scale(1);opacity:1}50%{transform:rotate(15deg) scale(1.2);opacity:.8}}
+  .fairy-sparkles{
+    position:absolute;inset:-15px;pointer-events:none;overflow:visible;
+  }
+  .fairy-sparkle{
+    position:absolute;font-size:12px;animation:sparkleFloat 2s ease-in-out infinite;
+  }
+  .fairy-sparkle:nth-child(1){top:0;left:10%;animation-delay:0s}
+  .fairy-sparkle:nth-child(2){top:20%;right:5%;animation-delay:.5s}
+  .fairy-sparkle:nth-child(3){bottom:10%;left:5%;animation-delay:1s}
+  .fairy-sparkle:nth-child(4){top:10%;left:50%;animation-delay:1.5s}
+  @keyframes sparkleFloat{0%,100%{transform:translateY(0) scale(1);opacity:.6}50%{transform:translateY(-8px) scale(1.3);opacity:1}}
+  .fairy-char.react{animation:fairyReact .5s ease}
+  @keyframes fairyReact{0%{transform:scale(1)}30%{transform:scale(1.25) rotate(5deg)}60%{transform:scale(1.1) rotate(-3deg)}100%{transform:scale(1)}}
+  .fairy-char.sad{animation:fairySad .5s ease}
+  @keyframes fairySad{0%{transform:scale(1)}30%{transform:scale(.9) rotate(-5deg)}60%{transform:scale(.95) rotate(3deg)}100%{transform:scale(1)}}
+  .fairy-name{
+    font-size:11px;text-align:center;color:rgba(255,255,255,.7);
+    margin-top:-4px;font-weight:700;
+  }
+
   /* Confetti */
   .confetti{position:fixed;top:-10px;z-index:9999;pointer-events:none;font-size:24px;animation:fall 2.5s linear forwards}
   @keyframes fall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
@@ -283,6 +338,10 @@
     .math-item{font-size:28px}
     .reward-bar{gap:10px;padding:10px 15px}
     .reward-badge{width:36px;height:36px;font-size:20px}
+    .fairy-wrap{bottom:10px;right:10px}
+    .fairy-char{width:64px;height:64px}
+    .fairy-body{font-size:48px;line-height:64px}
+    .fairy-bubble{max-width:200px;font-size:13px;padding:10px 13px}
   }
 </style>
 </head>
@@ -305,7 +364,7 @@
   <div class="reward-items">
     <div class="reward-badge locked" id="rw5" title="5 điểm → Ngôi Sao"><div class="reward-ring"></div>⭐</div>
     <div class="reward-badge locked" id="rw10" title="10 điểm → Huy Hiệu"><div class="reward-ring"></div>🏅</div>
-    <div class="reward-badge locked" id="rw15" title="15 điểm → Quà Tặng"><div class="reward-ring"></div>🎁</div>
+    <div class="reward-badge locked" id="rw15" title="25 điểm → Quà Tặng"><div class="reward-ring"></div>🎁</div>
   </div>
 </div>
 
@@ -317,6 +376,22 @@
     <p id="rewardMsg"></p>
     <button onclick="closeReward()">🎉 Tiếp tục chơi!</button>
   </div>
+</div>
+
+<!-- Fairy Guide -->
+<div class="fairy-wrap" id="fairyWrap">
+  <div class="fairy-bubble" id="fairyBubble"></div>
+  <div class="fairy-char" id="fairyChar" onclick="fairyTap()">
+    <div class="fairy-sparkles">
+      <span class="fairy-sparkle">✨</span>
+      <span class="fairy-sparkle">💖</span>
+      <span class="fairy-sparkle">⭐</span>
+      <span class="fairy-sparkle">✨</span>
+    </div>
+    <span class="fairy-body">🧚</span>
+    <span class="fairy-wand">✨</span>
+  </div>
+  <div class="fairy-name">Cô Tiên ✨</div>
 </div>
 
 <div class="tabs">
@@ -407,6 +482,87 @@ function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 function shuffle(a){return[...a].sort(()=>Math.random()-.5)}
 function pick(arr){return arr[rand(0,arr.length-1)]}
 
+// ===== FAIRY GUIDE =====
+let fairyTimer=null;
+const fairyEl=()=>document.getElementById('fairyChar');
+const fairyBubble=()=>document.getElementById('fairyBubble');
+
+const fairyTabMsgs={
+  count:['Đếm xem có bao nhiêu nào bé! 🔢','Mình cùng đếm nhé! 1, 2, 3... 🎈','Bé nhìn kỹ rồi đếm nha! 👀'],
+  add:['Cộng lại với nhau nào bé ơi! ➕','Gom lại xem được bao nhiêu nhỉ? 🌟','Cô Tiên tin bé làm được! ✨'],
+  sub:['Bớt đi mấy bạn nhỉ? ➖','Có mấy bạn đi chơi rồi, còn lại bao nhiêu? 🤔','Bé trừ thử xem nào! 💪'],
+  shapes:['Các hình xinh đẹp quá! 🔷','Nhấn vào hình để nghe tên nhé! 🔊','Bé biết hình này tên gì không? 🧐'],
+  compare:['Số nào lớn hơn nhỉ? ⚖️','So sánh xem nào bé! 📏','Nhìn kỹ hai số rồi chọn nhé! 🤓'],
+  pattern:['Tìm quy luật thôi nào! 🧩','Số nào đứng tiếp theo nhỉ? 🔍','Bé giỏi lắm, tìm ra đi nào! 🌈'],
+};
+
+const fairyCorrectMsgs=[
+  'Giỏi quá bé ơi! 🎉','Đúng rồi! Cô Tiên khen bé! ⭐','Tuyệt vời lắm! ✨',
+  'Bé thông minh ghê! 🌟','Xuất sắc! Cô Tiên vỗ tay! 👏','Wow! Bé giỏi lắm! 💖',
+  'Chính xác luôn! Cô Tiên tự hào! 🥳','Bé làm đúng rồi nè! 🎊',
+];
+const fairyWrongMsgs=[
+  'Không sao bé ơi, thử lại nhé! 💪','Sai rồi, nhưng cố lên nha! 🌈',
+  'Lần sau bé sẽ làm đúng! ✨','Đừng buồn nhé, thử lại nào! 💖',
+  'Cô Tiên tin bé sẽ làm được! 🌟','Sai chút xíu thôi, cố lên! 🎈',
+];
+const fairyIdleMsgs=[
+  'Bé ơi, chọn đáp án đi nào! 🤗','Cô Tiên đợi bé nè! ⏰',
+  'Bé có cần gợi ý không? 💡','Nhấn vào câu trả lời nhé! 👆',
+  'Cô Tiên cổ vũ bé! 📣','Bé dũng cảm lên nào! 💪',
+];
+
+function fairySay(msg, duration){
+  const b=fairyBubble();
+  b.textContent=msg;
+  b.classList.add('show');
+  clearTimeout(fairyTimer);
+  fairyTimer=setTimeout(()=>b.classList.remove('show'), duration||4000);
+}
+
+function fairySayAndSpeak(msg, duration){
+  fairySay(msg, duration);
+  // Extract text without emoji for cleaner speech
+  const clean=msg.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}]/gu,'').trim();
+  if(clean) speak(clean);
+}
+
+function fairyReact(correct){
+  const el=fairyEl();
+  el.classList.remove('react','sad');
+  void el.offsetWidth; // reflow
+  if(correct){
+    el.classList.add('react');
+    fairySay(pick(fairyCorrectMsgs),3000);
+  } else {
+    el.classList.add('sad');
+    fairySay(pick(fairyWrongMsgs),3500);
+  }
+}
+
+function fairyTap(){
+  sfxClick();
+  tone(784,.08);setTimeout(()=>tone(988,.1),80);
+  const el=fairyEl();
+  el.classList.remove('react');void el.offsetWidth;el.classList.add('react');
+  const msgs=['Xin chào bé! Cô là Cô Tiên đây! 🧚✨','Cô Tiên sẽ giúp bé học toán nhé! 💖','Bé có biết không, toán rất vui đấy! 🎉','Cô Tiên yêu bé lắm! 💕','Bé cố gắng lên nhé! Cô Tiên cổ vũ! 📣','Nhấn vào các nút ở trên để chơi nha! 🎮'];
+  fairySayAndSpeak(pick(msgs),5000);
+}
+
+let fairyIdleTimer=null;
+function resetFairyIdle(){
+  clearTimeout(fairyIdleTimer);
+  fairyIdleTimer=setTimeout(()=>{
+    fairySay(pick(fairyIdleMsgs),4000);
+  },15000);
+}
+
+function fairyIntro(tab){
+  const msgs=fairyTabMsgs[tab]||fairyTabMsgs.count;
+  fairySayAndSpeak(pick(msgs),4500);
+  resetFairyIdle();
+}
+
 // ===== Tabs =====
 const tabNames=['count','add','sub','shapes','compare','pattern'];
 function showTab(name){
@@ -414,6 +570,7 @@ function showTab(name){
   document.getElementById('tab-'+name).classList.remove('hidden');
   document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',tabNames[i]===name));
   sfxClick();
+  fairyIntro(name);
   if(name==='count') newCount();
   if(name==='add') newMath('add');
   if(name==='sub') newMath('sub');
@@ -490,11 +647,11 @@ function countType2(){
       if(answered)return;answered=true;cntTotal++;
       if(btn.dataset.v===answer){
         btn.style.borderColor='#22c55e';btn.style.background='rgba(34,197,94,.15)';
-        cntScore++;sfxHappy();confetti();addGlobalScore();
+        cntScore++;sfxHappy();confetti();addGlobalScore();fairyReact(true);resetFairyIdle();
         speak(`Đúng rồi! Nhóm ${answer} có nhiều hơn!`);
       } else {
         btn.style.borderColor='#ef4444';btn.style.background='rgba(239,68,68,.1)';
-        sfxWrong();
+        sfxWrong();fairyReact(false);resetFairyIdle();
         area.querySelectorAll('.group-pick').forEach(x=>{
           if(x.dataset.v===answer){x.style.borderColor='#22c55e';x.style.background='rgba(34,197,94,.15)'}
         });
@@ -533,10 +690,10 @@ function countType3(){
     btn.onclick=()=>{
       if(answered)return;answered=true;cntTotal++;
       if(+btn.dataset.v===target){
-        btn.classList.add('correct');cntScore++;sfxHappy();confetti();addGlobalScore();
+        btn.classList.add('correct');cntScore++;sfxHappy();confetti();addGlobalScore();fairyReact(true);resetFairyIdle();
         speak('Chính xác!');
       } else {
-        btn.classList.add('wrong');sfxWrong();
+        btn.classList.add('wrong');sfxWrong();fairyReact(false);resetFairyIdle();
         area.querySelectorAll('.group-match').forEach(x=>{if(+x.dataset.v===target)x.classList.add('correct')});
         speak(`Đáp án đúng là nhóm có ${target} ${em}`);
       }
@@ -552,10 +709,10 @@ function bindCountAnswer(area, answer){
     b.onclick=()=>{
       if(answered) return; answered=true; cntTotal++;
       if(+b.dataset.v===answer){
-        b.classList.add('correct');cntScore++;sfxHappy();confetti();addGlobalScore();
+        b.classList.add('correct');cntScore++;sfxHappy();confetti();addGlobalScore();fairyReact(true);resetFairyIdle();
         speak('Giỏi lắm!');
       } else {
-        b.classList.add('wrong');sfxWrong();
+        b.classList.add('wrong');sfxWrong();fairyReact(false);resetFairyIdle();
         area.querySelectorAll('.count-opt').forEach(x=>{if(+x.dataset.v===answer)x.classList.add('correct')});
         speak(`Đáp án đúng là ${answer}`);
       }
@@ -695,11 +852,11 @@ function bindMathChoice(area, type, answer){
         if(isAdd){addScore++}else{subScore++}
         btn.classList.add('correct');
         fb.textContent='🎉 Đúng rồi! Giỏi quá!';fb.style.color='#22c55e';
-        sfxHappy();confetti();addGlobalScore();
+        sfxHappy();confetti();addGlobalScore();fairyReact(true);resetFairyIdle();
       } else {
         btn.classList.add('wrong');
         fb.textContent=`❌ Sai rồi! Đáp án là ${answer}`;fb.style.color='#f87171';
-        sfxWrong();
+        sfxWrong();fairyReact(false);resetFairyIdle();
         area.querySelectorAll('.count-opt').forEach(x=>{if(+x.dataset.v===answer)x.classList.add('correct')});
       }
       document.getElementById((isAdd?'add':'sub')+'Score').textContent=isAdd?addScore:subScore;
@@ -768,11 +925,11 @@ function newShapeQuiz(){
     btn.onclick=()=>{
       if(answered)return;answered=true;shapeTotal++;
       if(btn.dataset.v===vn){
-        btn.classList.add('correct');shapeScore++;sfxHappy();confetti();addGlobalScore();
+        btn.classList.add('correct');shapeScore++;sfxHappy();confetti();addGlobalScore();fairyReact(true);resetFairyIdle();
         speak(`Đúng rồi! Đây là ${vn}`);
         speakEn(en);
       } else {
-        btn.classList.add('wrong');sfxWrong();
+        btn.classList.add('wrong');sfxWrong();fairyReact(false);resetFairyIdle();
         g.querySelectorAll('.count-opt').forEach(x=>{if(x.dataset.v===vn)x.classList.add('correct')});
         speak(`Sai rồi! Đây là ${vn}`);
       }
@@ -860,10 +1017,10 @@ function compareType3(){
     btn.onclick=()=>{
       if(answered)return;answered=true;cmpTotal++;
       if(+btn.dataset.v===answer){
-        btn.classList.add('correct');cmpScore++;sfxHappy();confetti();addGlobalScore();
+        btn.classList.add('correct');cmpScore++;sfxHappy();confetti();addGlobalScore();fairyReact(true);resetFairyIdle();
         speak(`Đúng rồi! Số ${isBiggest?'lớn nhất':'nhỏ nhất'} là ${answer}`);
       } else {
-        btn.classList.add('wrong');sfxWrong();
+        btn.classList.add('wrong');sfxWrong();fairyReact(false);resetFairyIdle();
         area.querySelectorAll('.compare-btn').forEach(x=>{if(+x.dataset.v===answer)x.classList.add('correct')});
         speak(`Sai rồi! Đáp án là ${answer}`);
       }
@@ -880,10 +1037,10 @@ function bindCompareAnswer(area, correct, desc){
     btn.onclick=()=>{
       if(answered)return;answered=true;cmpTotal++;
       if(btn.dataset.v===correct){
-        btn.classList.add('correct');cmpScore++;sfxHappy();confetti();addGlobalScore();
+        btn.classList.add('correct');cmpScore++;sfxHappy();confetti();addGlobalScore();fairyReact(true);resetFairyIdle();
         speak('Chính xác!');
       } else {
-        btn.classList.add('wrong');sfxWrong();
+        btn.classList.add('wrong');sfxWrong();fairyReact(false);resetFairyIdle();
         area.querySelectorAll('.compare-btn').forEach(x=>{if(x.dataset.v===correct)x.classList.add('correct')});
         speak(`Đáp án đúng là ${desc}`);
       }
@@ -995,12 +1152,12 @@ function patternType3(){
     btn.onclick=()=>{
       if(answered)return;answered=true;patTotal++;
       if(btn.dataset.v===answer){
-        btn.classList.add('correct');patScore++;sfxHappy();confetti();addGlobalScore();
+        btn.classList.add('correct');patScore++;sfxHappy();confetti();addGlobalScore();fairyReact(true);resetFairyIdle();
         speak('Tuyệt vời!');
         document.querySelector('.pattern-blank').textContent=answer;
         document.querySelector('.pattern-blank').style.fontSize='28px';
       } else {
-        btn.classList.add('wrong');sfxWrong();
+        btn.classList.add('wrong');sfxWrong();fairyReact(false);resetFairyIdle();
         area.querySelectorAll('.pattern-choice').forEach(x=>{if(x.dataset.v===answer)x.classList.add('correct')});
         speak(`Đáp án là ${answer}`);
       }
@@ -1017,12 +1174,12 @@ function bindPatternAnswer(area, answer){
     btn.onclick=()=>{
       if(answered)return;answered=true;patTotal++;
       if(+btn.dataset.v===answer){
-        btn.classList.add('correct');patScore++;sfxHappy();confetti();addGlobalScore();
+        btn.classList.add('correct');patScore++;sfxHappy();confetti();addGlobalScore();fairyReact(true);resetFairyIdle();
         speak('Tuyệt vời!');
         document.querySelector('.pattern-blank').textContent=answer;
         document.querySelector('.pattern-blank').style.color='#22c55e';
       } else {
-        btn.classList.add('wrong');sfxWrong();
+        btn.classList.add('wrong');sfxWrong();fairyReact(false);resetFairyIdle();
         area.querySelectorAll('.pattern-choice').forEach(x=>{if(+x.dataset.v===answer)x.classList.add('correct')});
         speak(`Đáp án là ${answer}`);
       }
@@ -1079,6 +1236,8 @@ function closeReward(){
 // ===== INIT =====
 buildShapesGallery();
 newCount();
+// Fairy welcome
+setTimeout(()=>fairySayAndSpeak('Xin chào bé! Cô là Cô Tiên 🧚 Cô sẽ hướng dẫn bé học toán nhé! ✨💖',6000),800);
 </script>
 </body>
 </html>
