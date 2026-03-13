@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧮 Học Toán Vui Vẻ - Kids Math</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --pink:#ff6b9d;--blue:#4ecdc4;--yellow:#ffe66d;--purple:#a855f7;
+    --orange:#ff8a5c;--green:#2dd4bf;
+  }
+  body{
+    font-family:'Baloo 2',cursive,sans-serif;
+    background:linear-gradient(135deg,#1a1145 0%,#0d1b3e 40%,#0a2342 100%);
+    color:#fff;overflow-x:hidden;min-height:100vh;
+  }
+  /* Floating shapes */
+  body::after{
+    content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(2px 2px at 5% 15%,#ffd700,transparent),
+      radial-gradient(1.5px 1.5px at 20% 70%,#fff,transparent),
+      radial-gradient(2px 2px at 40% 25%,#ffd700,transparent),
+      radial-gradient(1.5px 1.5px at 60% 80%,#fff,transparent),
+      radial-gradient(2px 2px at 75% 10%,#ffd700,transparent),
+      radial-gradient(1.5px 1.5px at 90% 50%,#fff,transparent),
+      radial-gradient(1px 1px at 35% 55%,#fff,transparent),
+      radial-gradient(1px 1px at 55% 40%,#ffd700,transparent),
+      radial-gradient(1.5px 1.5px at 80% 65%,#fff,transparent),
+      radial-gradient(1px 1px at 15% 45%,#ffd700,transparent);
+    animation:twinkle 4s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle{0%{opacity:.5}100%{opacity:1}}
+
+  header{text-align:center;padding:30px 20px 15px;position:relative;z-index:1}
+  header h1{
+    font-size:clamp(28px,5vw,48px);font-weight:800;
+    background:linear-gradient(135deg,#ff6b9d,#ffe66d,#4ecdc4,#a855f7);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;background-size:300% 300%;
+    animation:rainbow 4s linear infinite;
+  }
+  @keyframes rainbow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+  header p{font-size:18px;color:#bbb;margin-top:5px}
+
+  .tabs{
+    display:flex;justify-content:center;gap:10px;flex-wrap:wrap;
+    padding:10px 20px;position:relative;z-index:1;
+  }
+  .tab-btn{
+    padding:12px 22px;border:none;border-radius:50px;
+    font-family:inherit;font-size:15px;font-weight:700;
+    cursor:pointer;transition:all .3s;color:#fff;
+  }
+  .tab-btn:nth-child(1){background:linear-gradient(135deg,#ff6b9d,#c44569)}
+  .tab-btn:nth-child(2){background:linear-gradient(135deg,#4ecdc4,#2c9e8f)}
+  .tab-btn:nth-child(3){background:linear-gradient(135deg,#a855f7,#7c3aed)}
+  .tab-btn:nth-child(4){background:linear-gradient(135deg,#ff8a5c,#e05a2b)}
+  .tab-btn:nth-child(5){background:linear-gradient(135deg,#22d3ee,#0891b2)}
+  .tab-btn:nth-child(6){background:linear-gradient(135deg,#f472b6,#db2777)}
+  .tab-btn:hover{transform:scale(1.1);box-shadow:0 6px 25px rgba(0,0,0,.3)}
+  .tab-btn.active{transform:scale(1.1);box-shadow:0 0 20px rgba(255,255,255,.3)}
+
+  .game-area{max-width:900px;margin:20px auto;padding:20px;position:relative;z-index:1}
+  .card{
+    background:rgba(255,255,255,.07);backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:24px;padding:30px;
+    box-shadow:0 8px 40px rgba(0,0,0,.2);
+  }
+  .card h2{text-align:center;font-size:28px;margin-bottom:20px;color:var(--yellow)}
+  .hidden{display:none!important}
+
+  /* ===== COUNTING ===== */
+  .count-area{text-align:center}
+  .count-objects{
+    display:flex;flex-wrap:wrap;justify-content:center;gap:8px;
+    padding:20px;min-height:120px;
+    background:rgba(255,255,255,.04);border-radius:20px;margin:15px 0;
+  }
+  .count-obj{font-size:48px;animation:popIn .4s ease backwards;cursor:pointer;transition:transform .2s}
+  .count-obj:hover{transform:scale(1.3) rotate(10deg)}
+  @keyframes popIn{0%{transform:scale(0) rotate(-180deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+  .count-question{font-size:24px;margin:15px 0}
+  .count-options{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+  .count-opt{
+    width:70px;height:70px;border-radius:50%;border:3px solid rgba(255,255,255,.2);
+    background:rgba(255,255,255,.05);font-size:28px;font-weight:800;
+    font-family:inherit;color:#fff;cursor:pointer;transition:all .2s;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .count-opt:hover{border-color:var(--blue);background:rgba(78,205,196,.15);transform:scale(1.1)}
+  .count-opt.correct{border-color:#22c55e;background:rgba(34,197,94,.25);animation:pop .4s}
+  .count-opt.wrong{border-color:#ef4444;background:rgba(239,68,68,.2);animation:shake .4s}
+  @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.2)}100%{transform:scale(1)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+  /* ===== ADDITION / SUBTRACTION ===== */
+  .math-area{text-align:center}
+  .math-visual{
+    display:flex;align-items:center;justify-content:center;gap:15px;
+    flex-wrap:wrap;min-height:100px;margin:15px 0;
+  }
+  .math-group{
+    display:flex;flex-wrap:wrap;gap:6px;justify-content:center;
+    padding:15px;background:rgba(255,255,255,.04);border-radius:16px;
+    min-width:80px;
+  }
+  .math-item{font-size:36px;animation:popIn .3s ease backwards}
+  .math-op{font-size:48px;font-weight:800;color:var(--yellow)}
+  .math-eq{font-size:36px;margin:20px 0;color:var(--blue)}
+  .math-input-wrap{display:flex;align-items:center;justify-content:center;gap:10px;margin:15px 0}
+  .math-input{
+    width:100px;height:70px;text-align:center;font-size:36px;font-weight:800;
+    font-family:inherit;border:3px solid rgba(255,255,255,.2);
+    border-radius:16px;background:rgba(255,255,255,.05);color:#fff;
+    outline:none;
+  }
+  .math-input:focus{border-color:var(--blue);box-shadow:0 0 15px rgba(78,205,196,.3)}
+  .math-check{
+    padding:14px 30px;border:none;border-radius:50px;
+    background:linear-gradient(135deg,var(--green),var(--blue));
+    color:#fff;font-size:20px;font-family:inherit;font-weight:700;
+    cursor:pointer;transition:all .2s;
+  }
+  .math-check:hover{transform:scale(1.08)}
+  .math-next{
+    padding:12px 28px;border:none;border-radius:50px;
+    background:linear-gradient(135deg,var(--purple),var(--pink));
+    color:#fff;font-size:18px;font-family:inherit;font-weight:700;
+    cursor:pointer;transition:all .2s;margin-top:10px;
+  }
+  .math-next:hover{transform:scale(1.08)}
+  .math-feedback{font-size:28px;margin:15px 0;min-height:40px}
+
+  /* ===== SHAPES ===== */
+  .shape-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+    gap:15px;
+  }
+  .shape-card{
+    background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);
+    border-radius:20px;padding:20px;text-align:center;cursor:pointer;
+    transition:all .3s;
+  }
+  .shape-card:hover{transform:scale(1.08);border-color:var(--yellow);background:rgba(255,255,255,.1)}
+  .shape-icon{font-size:60px;display:block;margin-bottom:10px;transition:transform .3s}
+  .shape-card:hover .shape-icon{transform:rotate(15deg) scale(1.1)}
+  .shape-en{font-size:18px;font-weight:700;color:var(--blue)}
+  .shape-vn{font-size:14px;color:rgba(255,255,255,.6)}
+
+  /* ===== COMPARE ===== */
+  .compare-area{text-align:center}
+  .compare-row{
+    display:flex;align-items:center;justify-content:center;gap:20px;
+    margin:20px 0;flex-wrap:wrap;
+  }
+  .compare-num{
+    font-size:64px;font-weight:800;
+    padding:15px 30px;border-radius:20px;
+    background:rgba(255,255,255,.06);
+  }
+  .compare-opts{display:flex;justify-content:center;gap:15px}
+  .compare-btn{
+    width:80px;height:80px;border-radius:50%;border:3px solid rgba(255,255,255,.2);
+    background:rgba(255,255,255,.05);font-size:36px;font-weight:800;
+    font-family:inherit;color:#fff;cursor:pointer;transition:all .2s;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .compare-btn:hover{border-color:var(--yellow);background:rgba(255,255,255,.1);transform:scale(1.1)}
+  .compare-btn.correct{border-color:#22c55e;background:rgba(34,197,94,.2);animation:pop .4s}
+  .compare-btn.wrong{border-color:#ef4444;background:rgba(239,68,68,.2);animation:shake .4s}
+
+  /* ===== PATTERN ===== */
+  .pattern-area{text-align:center}
+  .pattern-seq{
+    display:flex;justify-content:center;gap:10px;flex-wrap:wrap;
+    margin:20px 0;
+  }
+  .pattern-item{
+    width:60px;height:60px;border-radius:14px;display:flex;
+    align-items:center;justify-content:center;font-size:32px;font-weight:800;
+    background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15);
+  }
+  .pattern-blank{
+    border:3px dashed var(--yellow);background:rgba(255,230,109,.08);
+    color:var(--yellow);font-size:24px;
+  }
+  .pattern-choices{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:15px}
+  .pattern-choice{
+    width:60px;height:60px;border-radius:14px;border:3px solid rgba(255,255,255,.2);
+    background:rgba(255,255,255,.05);font-size:28px;font-weight:800;
+    font-family:inherit;color:#fff;cursor:pointer;transition:all .2s;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .pattern-choice:hover{border-color:var(--blue);transform:scale(1.1)}
+  .pattern-choice.correct{border-color:#22c55e;background:rgba(34,197,94,.2);animation:pop .4s}
+  .pattern-choice.wrong{border-color:#ef4444;background:rgba(239,68,68,.2);animation:shake .4s}
+
+  .score-bar{
+    text-align:center;margin-top:15px;padding:12px;
+    background:rgba(255,255,255,.04);border-radius:14px;
+    font-size:18px;
+  }
+  .score-bar span{color:var(--yellow);font-weight:800;font-size:26px}
+
+  /* Confetti */
+  .confetti{position:fixed;top:-10px;z-index:9999;pointer-events:none;font-size:24px;animation:fall 2.5s linear forwards}
+  @keyframes fall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+  @media(max-width:600px){
+    .compare-num{font-size:44px;padding:10px 20px}
+    .math-item{font-size:28px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🧮 Học Toán Vui Vẻ 🎉</h1>
+  <p>Dành cho bé từ 3 - 5 tuổi 🧒👧</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('count')">🔢 Đếm Số</button>
+  <button class="tab-btn" onclick="showTab('add')">➕ Phép Cộng</button>
+  <button class="tab-btn" onclick="showTab('sub')">➖ Phép Trừ</button>
+  <button class="tab-btn" onclick="showTab('shapes')">🔷 Hình Học</button>
+  <button class="tab-btn" onclick="showTab('compare')">⚖️ So Sánh</button>
+  <button class="tab-btn" onclick="showTab('pattern')">🧩 Tìm Quy Luật</button>
+</div>
+
+<div class="game-area">
+  <div id="tab-count" class="card">
+    <h2>🔢 Đếm Số Nào!</h2>
+    <p style="text-align:center;color:#aaa;margin-bottom:10px">Đếm xem có bao nhiêu bạn nhỏ nhé! 🎈</p>
+    <div class="count-area" id="countArea"></div>
+    <div class="score-bar">Điểm: <span id="countScore">0</span> / <span id="countTotal">0</span></div>
+  </div>
+  <div id="tab-add" class="card hidden">
+    <h2>➕ Phép Cộng</h2>
+    <p style="text-align:center;color:#aaa;margin-bottom:10px">Cộng các bạn nhỏ lại nào! 🌟</p>
+    <div class="math-area" id="addArea"></div>
+    <div class="score-bar">Điểm: <span id="addScore">0</span> / <span id="addTotal">0</span></div>
+  </div>
+  <div id="tab-sub" class="card hidden">
+    <h2>➖ Phép Trừ</h2>
+    <p style="text-align:center;color:#aaa;margin-bottom:10px">Bớt đi mấy bạn nhỏ nhỉ? 🤔</p>
+    <div class="math-area" id="subArea"></div>
+    <div class="score-bar">Điểm: <span id="subScore">0</span> / <span id="subTotal">0</span></div>
+  </div>
+  <div id="tab-shapes" class="card hidden">
+    <h2>🔷 Hình Học Vui</h2>
+    <p style="text-align:center;color:#aaa;margin-bottom:10px">Nhấn vào hình để nghe tên nhé! 🔊</p>
+    <div class="shape-grid" id="shapeGrid"></div>
+  </div>
+  <div id="tab-compare" class="card hidden">
+    <h2>⚖️ So Sánh Số</h2>
+    <p style="text-align:center;color:#aaa;margin-bottom:10px">Số nào lớn hơn, nhỏ hơn hay bằng nhau? 🤔</p>
+    <div class="compare-area" id="compareArea"></div>
+    <div class="score-bar">Điểm: <span id="cmpScore">0</span> / <span id="cmpTotal">0</span></div>
+  </div>
+  <div id="tab-pattern" class="card hidden">
+    <h2>🧩 Tìm Quy Luật</h2>
+    <p style="text-align:center;color:#aaa;margin-bottom:10px">Số tiếp theo là số mấy nhỉ? 🧐</p>
+    <div class="pattern-area" id="patternArea"></div>
+    <div class="score-bar">Điểm: <span id="patScore">0</span> / <span id="patTotal">0</span></div>
+  </div>
+</div>
+
+<script>
+// ===== Audio =====
+const AC = new (window.AudioContext || window.webkitAudioContext)();
+function tone(f,d,t='sine'){
+  const o=AC.createOscillator(),g=AC.createGain();
+  o.type=t;o.frequency.value=f;
+  g.gain.setValueAtTime(.15,AC.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+d);
+  o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+d);
+}
+function sfxHappy(){tone(523,.1);setTimeout(()=>tone(659,.1),80);setTimeout(()=>tone(784,.18),160)}
+function sfxWrong(){tone(200,.12,'sawtooth');setTimeout(()=>tone(150,.18,'sawtooth'),100)}
+function sfxClick(){tone(880,.06)}
+function speak(t){
+  if(!window.speechSynthesis) return;
+  const u=new SpeechSynthesisUtterance(t);u.lang='vi-VN';u.rate=.9;u.pitch=1.2;
+  speechSynthesis.cancel();speechSynthesis.speak(u);
+}
+function speakEn(t){
+  if(!window.speechSynthesis) return;
+  const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.85;u.pitch=1.2;
+  speechSynthesis.cancel();speechSynthesis.speak(u);
+}
+
+function confetti(){
+  const es=['🎉','🌟','⭐','🎊','🎈','✨','💫','🥳','💖','🎆'];
+  for(let i=0;i<15;i++){
+    setTimeout(()=>{
+      const el=document.createElement('div');el.className='confetti';
+      el.textContent=es[~~(Math.random()*es.length)];
+      el.style.left=Math.random()*100+'%';
+      el.style.animationDuration=(2+Math.random()*2)+'s';
+      document.body.appendChild(el);setTimeout(()=>el.remove(),4000);
+    },i*80);
+  }
+}
+
+function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function shuffle(a){return[...a].sort(()=>Math.random()-.5)}
+function pick(arr){return arr[rand(0,arr.length-1)]}
+
+// ===== Tabs =====
+const tabNames=['count','add','sub','shapes','compare','pattern'];
+function showTab(name){
+  document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
+  document.getElementById('tab-'+name).classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',tabNames[i]===name));
+  sfxClick();
+  if(name==='count') newCount();
+  if(name==='add') newMath('add');
+  if(name==='sub') newMath('sub');
+  if(name==='shapes') initShapes();
+  if(name==='compare') newCompare();
+  if(name==='pattern') newPattern();
+}
+
+// ===== COUNTING — 3 question types =====
+const fruit=['🍎','🍊','🍋','🍇','🍓','🍑','🍒','🥝','🍌','🍉','🫐','🥭'];
+const animal=['🐱','🐶','🐰','🐻','🐸','🦋','🐧','🐬','🐢','🦊','🐝','🐞'];
+const star=['⭐','🌟','💫','✨','🌈','☀️','🌙','💎','🎈','🎀','🧸','🎁'];
+const allEmoji=[fruit,animal,star];
+let cntScore=0,cntTotal=0;
+
+function newCount(){
+  const t = rand(1,3);
+  if(t===1) countType1();
+  else if(t===2) countType2();
+  else countType3();
+}
+
+// Type 1: Count objects → pick number (original)
+function countType1(){
+  const area=document.getElementById('countArea');
+  const pool=pick(allEmoji);
+  const em=pick(pool);
+  const n=rand(1,10);
+  const answer=n;
+  const opts=shuffle([...new Set([answer,rand(1,10),rand(1,10),rand(1,10)])].slice(0,4));
+  if(!opts.includes(answer)){opts[rand(0,3)]=answer}
+
+  let objsHtml='';
+  for(let i=0;i<n;i++) objsHtml+=`<span class="count-obj" style="animation-delay:${i*.08}s">${em}</span>`;
+
+  area.innerHTML=`
+    <div class="count-objects">${objsHtml}</div>
+    <div class="count-question">Có bao nhiêu ${em} nhỉ?</div>
+    <div class="count-options">${opts.map(o=>
+      `<button class="count-opt" data-v="${o}">${o}</button>`
+    ).join('')}</div>
+  `;
+  bindCountAnswer(area, answer);
+}
+
+// Type 2: Which group has more?
+function countType2(){
+  const area=document.getElementById('countArea');
+  const em1=pick(fruit), em2=pick(animal);
+  let n1=rand(1,8), n2=rand(1,8);
+  while(n1===n2) n2=rand(1,8);
+  const answer = n1>n2 ? 'A' : 'B';
+
+  let g1='',g2='';
+  for(let i=0;i<n1;i++) g1+=`<span class="count-obj" style="animation-delay:${i*.06}s">${em1}</span>`;
+  for(let i=0;i<n2;i++) g2+=`<span class="count-obj" style="animation-delay:${i*.06}s">${em2}</span>`;
+
+  area.innerHTML=`
+    <div class="count-question">Nhóm nào có <b style="color:var(--yellow)">NHIỀU HƠN</b>? 🤔</div>
+    <div style="display:flex;gap:15px;justify-content:center;flex-wrap:wrap;margin:15px 0">
+      <button class="group-pick" data-v="A" style="flex:1;min-width:140px;padding:15px;border-radius:20px;border:3px solid rgba(78,205,196,.3);background:rgba(78,205,196,.08);cursor:pointer;transition:all .2s">
+        <div style="font-size:16px;font-weight:700;color:var(--blue);margin-bottom:8px">Nhóm A</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center">${g1}</div>
+      </button>
+      <button class="group-pick" data-v="B" style="flex:1;min-width:140px;padding:15px;border-radius:20px;border:3px solid rgba(168,85,247,.3);background:rgba(168,85,247,.08);cursor:pointer;transition:all .2s">
+        <div style="font-size:16px;font-weight:700;color:var(--purple);margin-bottom:8px">Nhóm B</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center">${g2}</div>
+      </button>
+    </div>
+  `;
+  let answered=false;
+  area.querySelectorAll('.group-pick').forEach(btn=>{
+    btn.onclick=()=>{
+      if(answered)return;answered=true;cntTotal++;
+      if(btn.dataset.v===answer){
+        btn.style.borderColor='#22c55e';btn.style.background='rgba(34,197,94,.15)';
+        cntScore++;sfxHappy();confetti();
+        speak(`Đúng rồi! Nhóm ${answer} có nhiều hơn!`);
+      } else {
+        btn.style.borderColor='#ef4444';btn.style.background='rgba(239,68,68,.1)';
+        sfxWrong();
+        area.querySelectorAll('.group-pick').forEach(x=>{
+          if(x.dataset.v===answer){x.style.borderColor='#22c55e';x.style.background='rgba(34,197,94,.15)'}
+        });
+        speak(`Sai rồi! Nhóm ${answer} mới nhiều hơn`);
+      }
+      updateCountScore();
+      setTimeout(newCount,2000);
+    };
+  });
+}
+
+// Type 3: See a number → pick the correct group of objects
+function countType3(){
+  const area=document.getElementById('countArea');
+  const target=rand(2,8);
+  const em=pick(fruit);
+  // Generate 3 wrong counts
+  let wrongs=new Set();
+  while(wrongs.size<3){const w=rand(1,10);if(w!==target)wrongs.add(w)}
+  const allCounts=shuffle([target,...wrongs]);
+
+  area.innerHTML=`
+    <div class="count-question" style="font-size:48px;margin:10px 0"><b style="color:var(--yellow)">${target}</b></div>
+    <div class="count-question">Nhóm nào có đúng <b style="color:var(--yellow)">${target}</b> ${em}?</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:15px 0">
+      ${allCounts.map(n=>{
+        let dots='';for(let i=0;i<n;i++) dots+=`<span style="font-size:28px">${em}</span>`;
+        return `<button class="count-opt group-match" data-v="${n}" style="width:100%;height:auto;padding:12px;border-radius:16px;display:flex;flex-wrap:wrap;gap:4px;justify-content:center">
+          ${dots}
+        </button>`;
+      }).join('')}
+    </div>
+  `;
+  let answered=false;
+  area.querySelectorAll('.group-match').forEach(btn=>{
+    btn.onclick=()=>{
+      if(answered)return;answered=true;cntTotal++;
+      if(+btn.dataset.v===target){
+        btn.classList.add('correct');cntScore++;sfxHappy();confetti();
+        speak('Chính xác!');
+      } else {
+        btn.classList.add('wrong');sfxWrong();
+        area.querySelectorAll('.group-match').forEach(x=>{if(+x.dataset.v===target)x.classList.add('correct')});
+        speak(`Đáp án đúng là nhóm có ${target} ${em}`);
+      }
+      updateCountScore();
+      setTimeout(newCount,1800);
+    };
+  });
+}
+
+function bindCountAnswer(area, answer){
+  let answered=false;
+  area.querySelectorAll('.count-opt').forEach(b=>{
+    b.onclick=()=>{
+      if(answered) return; answered=true; cntTotal++;
+      if(+b.dataset.v===answer){
+        b.classList.add('correct');cntScore++;sfxHappy();confetti();
+        speak('Giỏi lắm!');
+      } else {
+        b.classList.add('wrong');sfxWrong();
+        area.querySelectorAll('.count-opt').forEach(x=>{if(+x.dataset.v===answer)x.classList.add('correct')});
+        speak(`Đáp án đúng là ${answer}`);
+      }
+      updateCountScore();
+      setTimeout(newCount,1800);
+    };
+  });
+}
+function updateCountScore(){
+  document.getElementById('countScore').textContent=cntScore;
+  document.getElementById('countTotal').textContent=cntTotal;
+}
+
+// ===== ADD / SUB — 3 question types each =====
+const mathEmoji=['🍎','🌟','🐱','🎈','🍒','🦋','🐶','💎','🍊','🧸'];
+const wordNames={'🍎':'quả táo','🌟':'ngôi sao','🐱':'con mèo','🎈':'quả bóng','🍒':'quả cherry','🦋':'con bướm','🐶':'con chó','💎':'viên kim cương','🍊':'quả cam','🧸':'gấu bông'};
+let addScore=0,addTotal=0,subScore=0,subTotal=0;
+
+function newMath(type){
+  const t=rand(1,3);
+  if(t===1) mathType1(type);
+  else if(t===2) mathType2(type);
+  else mathType3(type);
+}
+
+// Type 1: Visual + multiple choice (instead of text input — easier for 3-5)
+function mathType1(type){
+  const isAdd=type==='add';
+  const area=document.getElementById(isAdd?'addArea':'subArea');
+  let a,b,answer;
+  if(isAdd){a=rand(1,7);b=rand(1,7);answer=a+b;}
+  else{a=rand(2,10);b=rand(1,a-1);answer=a-b;}
+  const em=pick(mathEmoji);
+
+  let g1='',g2='';
+  for(let i=0;i<a;i++) g1+=`<span class="math-item" style="animation-delay:${i*.06}s">${em}</span>`;
+  if(isAdd) for(let i=0;i<b;i++) g2+=`<span class="math-item" style="animation-delay:${(a+i)*.06}s">${em}</span>`;
+  else for(let i=0;i<b;i++) g2+=`<span class="math-item" style="animation-delay:${(a+i)*.06}s;opacity:.35;text-decoration:line-through">${em}</span>`;
+
+  const opts=shuffle([...new Set([answer,answer+1,answer-1,answer+2,answer-2].filter(x=>x>=0))].slice(0,4));
+  if(!opts.includes(answer)){opts[rand(0,Math.min(3,opts.length-1))]=answer}
+
+  area.innerHTML=`
+    <div class="math-visual">
+      <div class="math-group">${g1}</div>
+      <div class="math-op">${isAdd?'+':'−'}</div>
+      <div class="math-group">${g2}</div>
+    </div>
+    <div class="math-eq">${a} ${isAdd?'+':'−'} ${b} = ?</div>
+    <div class="count-options" style="margin-top:15px">${opts.map(o=>
+      `<button class="count-opt" data-v="${o}">${o}</button>`
+    ).join('')}</div>
+    <div class="math-feedback" id="${type}Fb"></div>
+  `;
+  bindMathChoice(area, type, answer);
+}
+
+// Type 2: Word problem story
+function mathType2(type){
+  const isAdd=type==='add';
+  const area=document.getElementById(isAdd?'addArea':'subArea');
+  const em=pick(mathEmoji);
+  const name=wordNames[em]||'vật';
+  let a,b,answer,story;
+  if(isAdd){
+    a=rand(1,6);b=rand(1,6);answer=a+b;
+    const stories=[
+      `Bé An có <b>${a}</b> ${em} ${name}. Mẹ cho thêm <b>${b}</b> ${em} nữa.<br>Hỏi bé An có tất cả bao nhiêu ${em}?`,
+      `Trên bàn có <b>${a}</b> ${em} ${name}. Bố đặt thêm <b>${b}</b> ${em}.<br>Hỏi trên bàn có bao nhiêu ${em}?`,
+      `Trong rổ có <b>${a}</b> ${em}. Bé An bỏ thêm <b>${b}</b> ${em} vào rổ.<br>Tổng cộng có bao nhiêu ${em}?`,
+    ];
+    story=pick(stories);
+  } else {
+    a=rand(3,10);b=rand(1,a-1);answer=a-b;
+    const stories=[
+      `Bé An có <b>${a}</b> ${em} ${name}. Bé cho bạn <b>${b}</b> ${em}.<br>Hỏi bé An còn lại bao nhiêu ${em}?`,
+      `Trên cây có <b>${a}</b> ${em}. Rơi mất <b>${b}</b> ${em}.<br>Trên cây còn bao nhiêu ${em}?`,
+      `Trong hộp có <b>${a}</b> ${em}. Bé An lấy ra <b>${b}</b> ${em}.<br>Trong hộp còn bao nhiêu ${em}?`,
+    ];
+    story=pick(stories);
+  }
+
+  const opts=shuffle([...new Set([answer,answer+1,answer-1,answer+2,Math.max(0,answer-2)].filter(x=>x>=0))].slice(0,4));
+  if(!opts.includes(answer)){opts[rand(0,Math.min(3,opts.length-1))]=answer}
+
+  area.innerHTML=`
+    <div style="font-size:20px;line-height:1.6;text-align:center;padding:15px 10px;background:rgba(255,255,255,.04);border-radius:16px;margin-bottom:15px">
+      📖 ${story}
+    </div>
+    <div class="count-options" style="margin-top:15px">${opts.map(o=>
+      `<button class="count-opt" data-v="${o}">${o}</button>`
+    ).join('')}</div>
+    <div class="math-feedback" id="${type}Fb"></div>
+  `;
+  bindMathChoice(area, type, answer);
+}
+
+// Type 3: Missing number — ? + b = c  or  a - ? = c
+function mathType3(type){
+  const isAdd=type==='add';
+  const area=document.getElementById(isAdd?'addArea':'subArea');
+  let a,b,answer;
+  if(isAdd){
+    answer=rand(1,6);b=rand(1,6);a=answer+b; // ? + b = a
+  } else {
+    a=rand(3,10);answer=rand(1,a-1);b=a-answer; // a - ? = b
+  }
+  const em=pick(mathEmoji);
+  const eq=isAdd
+    ? `<span style="color:var(--yellow);font-size:44px">?</span> + ${b} = ${a}`
+    : `${a} − <span style="color:var(--yellow);font-size:44px">?</span> = ${b}`;
+
+  const opts=shuffle([...new Set([answer,answer+1,answer-1,answer+2,Math.max(0,answer-2)].filter(x=>x>=0))].slice(0,4));
+  if(!opts.includes(answer)){opts[rand(0,Math.min(3,opts.length-1))]=answer}
+
+  area.innerHTML=`
+    <div style="font-size:48px;margin:15px 0;text-align:center">🔍</div>
+    <div style="font-size:20px;text-align:center;color:#aaa;margin-bottom:10px">Tìm số bị giấu!</div>
+    <div class="math-eq">${eq}</div>
+    <div class="count-options" style="margin-top:15px">${opts.map(o=>
+      `<button class="count-opt" data-v="${o}">${o}</button>`
+    ).join('')}</div>
+    <div class="math-feedback" id="${type}Fb"></div>
+  `;
+  bindMathChoice(area, type, answer);
+}
+
+function bindMathChoice(area, type, answer){
+  const isAdd=type==='add';
+  const fb=document.getElementById(type+'Fb');
+  let answered=false;
+  area.querySelectorAll('.count-opt').forEach(btn=>{
+    btn.onclick=()=>{
+      if(answered)return;answered=true;
+      if(isAdd){addTotal++}else{subTotal++}
+      if(+btn.dataset.v===answer){
+        if(isAdd){addScore++}else{subScore++}
+        btn.classList.add('correct');
+        fb.textContent='🎉 Đúng rồi! Giỏi quá!';fb.style.color='#22c55e';
+        sfxHappy();confetti();
+      } else {
+        btn.classList.add('wrong');
+        fb.textContent=`❌ Sai rồi! Đáp án là ${answer}`;fb.style.color='#f87171';
+        sfxWrong();
+        area.querySelectorAll('.count-opt').forEach(x=>{if(+x.dataset.v===answer)x.classList.add('correct')});
+      }
+      document.getElementById((isAdd?'add':'sub')+'Score').textContent=isAdd?addScore:subScore;
+      document.getElementById((isAdd?'add':'sub')+'Total').textContent=isAdd?addTotal:subTotal;
+      setTimeout(()=>newMath(type),1800);
+    };
+  });
+}
+
+// ===== SHAPES — gallery + quiz mode =====
+const shapes=[
+  ['🔴','Circle','Hình tròn'],['🟥','Square','Hình vuông'],
+  ['🔺','Triangle','Hình tam giác'],['⬭','Oval','Hình bầu dục'],
+  ['💎','Diamond','Hình thoi'],['⭐','Star','Hình ngôi sao'],
+  ['❤️','Heart','Hình trái tim'],['🟩','Rectangle','Hình chữ nhật'],
+  ['⬡','Hexagon','Hình lục giác'],['🌙','Crescent','Hình trăng lưỡi liềm'],
+];
+let shapeMode='gallery', shapeScore=0, shapeTotal=0;
+
+function initShapes(){
+  const g=document.getElementById('shapeGrid');
+  if(shapeMode==='gallery') buildShapesGallery();
+  else newShapeQuiz();
+}
+
+function buildShapesGallery(){
+  const g=document.getElementById('shapeGrid');
+  g.innerHTML='';
+  g.style.display='grid';
+  shapes.forEach(([em,en,vn])=>{
+    const c=document.createElement('div');c.className='shape-card';
+    c.innerHTML=`<span class="shape-icon">${em}</span><div class="shape-en">${en}</div><div class="shape-vn">${vn}</div>`;
+    c.onclick=()=>{speakEn(en);sfxClick()};
+    g.appendChild(c);
+  });
+  // Add quiz button
+  const wrap=document.createElement('div');
+  wrap.style.cssText='grid-column:1/-1;text-align:center;margin-top:10px';
+  wrap.innerHTML=`<button class="math-next" onclick="shapeMode='quiz';newShapeQuiz()">🎯 Chơi đoán hình!</button>`;
+  g.appendChild(wrap);
+}
+
+function newShapeQuiz(){
+  const g=document.getElementById('shapeGrid');
+  g.style.display='block';
+  const [em,en,vn]=shapes[rand(0,shapes.length-1)];
+  const wrongChoices=shuffle(shapes.filter(s=>s[2]!==vn)).slice(0,3).map(s=>s[2]);
+  const choices=shuffle([vn,...wrongChoices]);
+
+  g.innerHTML=`
+    <div style="text-align:center">
+      <div style="font-size:100px;margin:15px 0;animation:popIn .5s ease">${em}</div>
+      <p style="font-size:22px;margin-bottom:15px">Đây là hình gì nhỉ? 🤔</p>
+      <div class="count-options" style="gap:10px">
+        ${choices.map(c=>`<button class="count-opt" data-v="${c}" style="width:auto;height:auto;padding:12px 22px;border-radius:16px;font-size:18px">${c}</button>`).join('')}
+      </div>
+      <div class="math-feedback" id="shapeFb" style="margin-top:10px"></div>
+      <div style="margin-top:15px">
+        <button class="math-check" onclick="shapeMode='gallery';buildShapesGallery()" style="font-size:14px;padding:10px 20px">📚 Xem lại hình</button>
+      </div>
+      <div class="score-bar" style="margin-top:10px">Điểm: <span style="color:var(--yellow);font-weight:800;font-size:26px">${shapeScore}</span> / <span style="color:var(--yellow);font-weight:800;font-size:26px">${shapeTotal}</span></div>
+    </div>
+  `;
+  let answered=false;
+  g.querySelectorAll('.count-opt').forEach(btn=>{
+    btn.onclick=()=>{
+      if(answered)return;answered=true;shapeTotal++;
+      if(btn.dataset.v===vn){
+        btn.classList.add('correct');shapeScore++;sfxHappy();confetti();
+        speak(`Đúng rồi! Đây là ${vn}`);
+        speakEn(en);
+      } else {
+        btn.classList.add('wrong');sfxWrong();
+        g.querySelectorAll('.count-opt').forEach(x=>{if(x.dataset.v===vn)x.classList.add('correct')});
+        speak(`Sai rồi! Đây là ${vn}`);
+      }
+      document.getElementById('shapeFb').textContent=`${em} = ${vn} (${en})`;
+      setTimeout(newShapeQuiz,2000);
+    };
+  });
+}
+
+// ===== COMPARE — 3 question types =====
+let cmpScore=0,cmpTotal=0;
+function newCompare(){
+  const t=rand(1,3);
+  if(t===1) compareType1();
+  else if(t===2) compareType2();
+  else compareType3();
+}
+
+// Type 1: Compare two numbers (original)
+function compareType1(){
+  const area=document.getElementById('compareArea');
+  const a=rand(1,15),b=rand(1,15);
+  const correct = a>b?'>':a<b?'<':'=';
+
+  area.innerHTML=`
+    <div class="compare-row">
+      <div class="compare-num" style="color:#4ecdc4">${a}</div>
+      <div style="font-size:40px;color:var(--yellow)">?</div>
+      <div class="compare-num" style="color:#a855f7">${b}</div>
+    </div>
+    <p style="font-size:20px;margin-bottom:15px">Chọn dấu đúng nhé!</p>
+    <div class="compare-opts">
+      <button class="compare-btn" data-v="<">&lt;</button>
+      <button class="compare-btn" data-v="=">=</button>
+      <button class="compare-btn" data-v=">">&gt;</button>
+    </div>
+  `;
+  bindCompareAnswer(area, correct, `${a} ${correct} ${b}`);
+}
+
+// Type 2: Compare two groups of emoji objects
+function compareType2(){
+  const area=document.getElementById('compareArea');
+  const em1=pick(fruit),em2=pick(animal);
+  const n1=rand(1,8),n2=rand(1,8);
+  const correct=n1>n2?'>':n1<n2?'<':'=';
+  let g1='',g2='';
+  for(let i=0;i<n1;i++) g1+=`<span style="font-size:32px">${em1}</span>`;
+  for(let i=0;i<n2;i++) g2+=`<span style="font-size:32px">${em2}</span>`;
+
+  area.innerHTML=`
+    <p style="font-size:20px;margin-bottom:10px;text-align:center">So sánh hai nhóm!</p>
+    <div class="compare-row">
+      <div style="padding:15px;background:rgba(78,205,196,.08);border-radius:16px;display:flex;flex-wrap:wrap;gap:4px;justify-content:center;min-width:100px">${g1}</div>
+      <div style="font-size:40px;color:var(--yellow)">?</div>
+      <div style="padding:15px;background:rgba(168,85,247,.08);border-radius:16px;display:flex;flex-wrap:wrap;gap:4px;justify-content:center;min-width:100px">${g2}</div>
+    </div>
+    <p style="font-size:16px;color:#aaa;margin-bottom:15px;text-align:center">(${n1} ${em1})  &nbsp; so với &nbsp; (${n2} ${em2})</p>
+    <div class="compare-opts">
+      <button class="compare-btn" data-v="<">&lt;</button>
+      <button class="compare-btn" data-v="=">=</button>
+      <button class="compare-btn" data-v=">">&gt;</button>
+    </div>
+  `;
+  bindCompareAnswer(area, correct, `${n1} ${correct} ${n2}`);
+}
+
+// Type 3: Find biggest or smallest among 3 numbers
+function compareType3(){
+  const area=document.getElementById('compareArea');
+  const isBiggest=rand(0,1)===0;
+  const nums=[rand(1,15),rand(1,15),rand(1,15)];
+  // ensure not all the same
+  while(nums[0]===nums[1]&&nums[1]===nums[2]) nums[2]=rand(1,15);
+  const answer=isBiggest?Math.max(...nums):Math.min(...nums);
+
+  area.innerHTML=`
+    <p style="font-size:22px;text-align:center;margin-bottom:15px">Chọn số <b style="color:var(--yellow)">${isBiggest?'LỚN NHẤT':'NHỎ NHẤT'}</b> ${isBiggest?'📈':'📉'}</p>
+    <div class="compare-opts" style="gap:20px">
+      ${nums.map(n=>`<button class="compare-btn" data-v="${n}" style="font-size:32px;width:90px;height:90px">${n}</button>`).join('')}
+    </div>
+  `;
+  let answered=false;
+  area.querySelectorAll('.compare-btn').forEach(btn=>{
+    btn.onclick=()=>{
+      if(answered)return;answered=true;cmpTotal++;
+      if(+btn.dataset.v===answer){
+        btn.classList.add('correct');cmpScore++;sfxHappy();confetti();
+        speak(`Đúng rồi! Số ${isBiggest?'lớn nhất':'nhỏ nhất'} là ${answer}`);
+      } else {
+        btn.classList.add('wrong');sfxWrong();
+        area.querySelectorAll('.compare-btn').forEach(x=>{if(+x.dataset.v===answer)x.classList.add('correct')});
+        speak(`Sai rồi! Đáp án là ${answer}`);
+      }
+      document.getElementById('cmpScore').textContent=cmpScore;
+      document.getElementById('cmpTotal').textContent=cmpTotal;
+      setTimeout(newCompare,1800);
+    };
+  });
+}
+
+function bindCompareAnswer(area, correct, desc){
+  let answered=false;
+  area.querySelectorAll('.compare-btn').forEach(btn=>{
+    btn.onclick=()=>{
+      if(answered)return;answered=true;cmpTotal++;
+      if(btn.dataset.v===correct){
+        btn.classList.add('correct');cmpScore++;sfxHappy();confetti();
+        speak('Chính xác!');
+      } else {
+        btn.classList.add('wrong');sfxWrong();
+        area.querySelectorAll('.compare-btn').forEach(x=>{if(x.dataset.v===correct)x.classList.add('correct')});
+        speak(`Đáp án đúng là ${desc}`);
+      }
+      document.getElementById('cmpScore').textContent=cmpScore;
+      document.getElementById('cmpTotal').textContent=cmpTotal;
+      setTimeout(newCompare,1800);
+    };
+  });
+}
+
+// ===== PATTERN — 3 question types =====
+let patScore=0,patTotal=0;
+function newPattern(){
+  const t=rand(1,3);
+  if(t===1) patternType1();
+  else if(t===2) patternType2();
+  else patternType3();
+}
+
+// Type 1: Increasing number sequence (original)
+function patternType1(){
+  const area=document.getElementById('patternArea');
+  const start=rand(1,5);
+  const step=rand(1,3);
+  const seq=[];
+  for(let i=0;i<6;i++) seq.push(start+step*i);
+  const blankIdx=rand(3,5);
+  const answer=seq[blankIdx];
+  const wrongOpts=shuffle([answer+1,answer-1,answer+step,answer-step,answer+2].filter(x=>x!==answer&&x>0));
+  const choices=shuffle([answer,...wrongOpts.slice(0,3)]);
+  if(!choices.includes(answer)){choices[rand(0,3)]=answer}
+
+  area.innerHTML=`
+    <div class="pattern-seq">
+      ${seq.map((n,i)=>{
+        if(i===blankIdx) return `<div class="pattern-item pattern-blank">?</div>`;
+        return `<div class="pattern-item">${n}</div>`;
+      }).join('')}
+    </div>
+    <p style="font-size:18px;margin:10px 0;color:#aaa">Quy luật: cộng thêm <b style="color:var(--yellow)">${step}</b> mỗi bước 📈</p>
+    <div class="pattern-choices">
+      ${choices.map(c=>`<button class="pattern-choice" data-v="${c}">${c}</button>`).join('')}
+    </div>
+  `;
+  bindPatternAnswer(area, answer);
+}
+
+// Type 2: Decreasing number sequence
+function patternType2(){
+  const area=document.getElementById('patternArea');
+  const step=rand(1,3);
+  const start=rand(step*5+1, step*5+5);
+  const seq=[];
+  for(let i=0;i<6;i++) seq.push(start-step*i);
+  const blankIdx=rand(3,5);
+  const answer=seq[blankIdx];
+  const wrongOpts=shuffle([answer+1,answer-1,answer+step,answer-step,answer+2].filter(x=>x!==answer&&x>0));
+  const choices=shuffle([answer,...wrongOpts.slice(0,3)]);
+  if(!choices.includes(answer)){choices[rand(0,Math.min(3,choices.length-1))]=answer}
+
+  area.innerHTML=`
+    <div class="pattern-seq">
+      ${seq.map((n,i)=>{
+        if(i===blankIdx) return `<div class="pattern-item pattern-blank">?</div>`;
+        return `<div class="pattern-item">${n}</div>`;
+      }).join('')}
+    </div>
+    <p style="font-size:18px;margin:10px 0;color:#aaa">Quy luật: bớt đi <b style="color:var(--pink)">${step}</b> mỗi bước 📉</p>
+    <div class="pattern-choices">
+      ${choices.map(c=>`<button class="pattern-choice" data-v="${c}">${c}</button>`).join('')}
+    </div>
+  `;
+  bindPatternAnswer(area, answer);
+}
+
+// Type 3: Emoji repeating pattern (find the missing emoji)
+function patternType3(){
+  const area=document.getElementById('patternArea');
+  const patterns=[
+    ['🔴','🔵'],['🌞','🌙'],['⭐','❤️'],['🍎','🍊'],['🐱','🐶'],
+    ['🔴','🔵','🟢'],['🌸','🌼','🌺'],['⚽','🏀','🎾'],
+  ];
+  const pat=pick(patterns);
+  const len=pat.length;
+  const seqLen=rand(6,8);
+  const seq=[];
+  for(let i=0;i<seqLen;i++) seq.push(pat[i%len]);
+  const blankIdx=rand(3,seqLen-1);
+  const answer=seq[blankIdx];
+  // wrong choices from other emojis
+  const allPat=['🔴','🔵','🟢','🌞','🌙','⭐','❤️','🍎','🍊','🐱','🐶','🌸','🌼','🌺','⚽','🏀','🎾'];
+  const wrongs=shuffle(allPat.filter(e=>e!==answer)).slice(0,3);
+  const choices=shuffle([answer,...wrongs]);
+
+  area.innerHTML=`
+    <div class="pattern-seq">
+      ${seq.map((e,i)=>{
+        if(i===blankIdx) return `<div class="pattern-item pattern-blank">?</div>`;
+        return `<div class="pattern-item" style="font-size:28px;background:transparent;border:none">${e}</div>`;
+      }).join('')}
+    </div>
+    <p style="font-size:18px;margin:10px 0;color:#aaa">Quy luật lặp lại: ${pat.join(' ')} ${pat.join(' ')} ... 🔄</p>
+    <div class="pattern-choices">
+      ${choices.map(c=>`<button class="pattern-choice emoji-choice" data-v="${c}" style="font-size:28px">${c}</button>`).join('')}
+    </div>
+  `;
+  let answered=false;
+  area.querySelectorAll('.pattern-choice').forEach(btn=>{
+    btn.onclick=()=>{
+      if(answered)return;answered=true;patTotal++;
+      if(btn.dataset.v===answer){
+        btn.classList.add('correct');patScore++;sfxHappy();confetti();
+        speak('Tuyệt vời!');
+        document.querySelector('.pattern-blank').textContent=answer;
+        document.querySelector('.pattern-blank').style.fontSize='28px';
+      } else {
+        btn.classList.add('wrong');sfxWrong();
+        area.querySelectorAll('.pattern-choice').forEach(x=>{if(x.dataset.v===answer)x.classList.add('correct')});
+        speak(`Đáp án là ${answer}`);
+      }
+      document.getElementById('patScore').textContent=patScore;
+      document.getElementById('patTotal').textContent=patTotal;
+      setTimeout(newPattern,2000);
+    };
+  });
+}
+
+function bindPatternAnswer(area, answer){
+  let answered=false;
+  area.querySelectorAll('.pattern-choice').forEach(btn=>{
+    btn.onclick=()=>{
+      if(answered)return;answered=true;patTotal++;
+      if(+btn.dataset.v===answer){
+        btn.classList.add('correct');patScore++;sfxHappy();confetti();
+        speak('Tuyệt vời!');
+        document.querySelector('.pattern-blank').textContent=answer;
+        document.querySelector('.pattern-blank').style.color='#22c55e';
+      } else {
+        btn.classList.add('wrong');sfxWrong();
+        area.querySelectorAll('.pattern-choice').forEach(x=>{if(+x.dataset.v===answer)x.classList.add('correct')});
+        speak(`Đáp án là ${answer}`);
+      }
+      document.getElementById('patScore').textContent=patScore;
+      document.getElementById('patTotal').textContent=patTotal;
+      setTimeout(newPattern,2000);
+    };
+  });
+}
+
+// ===== INIT =====
+buildShapesGallery();
+newCount();
+</script>
+</body>
+</html>
