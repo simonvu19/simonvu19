@@ -356,7 +356,7 @@ function newCount(){
       if(answered) return; answered=true; cntTotal++;
       if(+b.dataset.v===answer){
         b.classList.add('correct');cntScore++;sfxHappy();confetti();
-        speak('Giỏi lắm!');
+        speak('Giỏi lắm bé An!');
       } else {
         b.classList.add('wrong');sfxWrong();
         area.querySelectorAll('.count-opt').forEach(x=>{if(+x.dataset.v===answer)x.classList.add('correct')});
