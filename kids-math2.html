@@ -206,6 +206,74 @@
   }
   .score-bar span{color:var(--yellow);font-weight:800;font-size:26px}
 
+  /* Reward Bar */
+  .reward-bar{
+    max-width:900px;margin:10px auto;padding:14px 20px;
+    background:rgba(255,255,255,.07);backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.1);border-radius:50px;
+    display:flex;align-items:center;justify-content:center;gap:20px;
+    position:relative;z-index:1;flex-wrap:wrap;
+  }
+  .reward-total{
+    font-size:18px;font-weight:700;color:#fff;
+  }
+  .reward-total span{color:var(--yellow);font-size:24px;font-weight:800}
+  .reward-items{display:flex;gap:8px;align-items:center}
+  .reward-badge{
+    width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:24px;transition:all .3s;position:relative;
+  }
+  .reward-badge.locked{opacity:.25;filter:grayscale(1)}
+  .reward-badge.unlocked{animation:rewardPop .5s ease}
+  .reward-badge .reward-ring{
+    position:absolute;inset:-3px;border-radius:50%;
+    border:2px solid transparent;transition:all .3s;
+  }
+  .reward-badge.unlocked .reward-ring{border-color:var(--yellow);box-shadow:0 0 12px rgba(255,230,109,.4)}
+  @keyframes rewardPop{0%{transform:scale(0) rotate(-180deg)}60%{transform:scale(1.3) rotate(10deg)}100%{transform:scale(1) rotate(0)}}
+  .progress-wrap{
+    flex:1;min-width:120px;max-width:250px;height:14px;
+    background:rgba(255,255,255,.08);border-radius:10px;overflow:hidden;position:relative;
+  }
+  .progress-fill{
+    height:100%;border-radius:10px;transition:width .5s ease;
+    background:linear-gradient(90deg,var(--blue),var(--purple),var(--pink));
+    background-size:200% 100%;animation:progressShine 2s linear infinite;
+  }
+  @keyframes progressShine{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  .progress-marks{
+    position:absolute;inset:0;display:flex;align-items:center;
+  }
+  .progress-mark{
+    position:absolute;top:-2px;width:3px;height:18px;background:rgba(255,255,255,.3);border-radius:2px;
+  }
+
+  /* Reward Popup */
+  .reward-overlay{
+    position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,.6);backdrop-filter:blur(5px);opacity:0;pointer-events:none;
+    transition:opacity .3s;
+  }
+  .reward-overlay.show{opacity:1;pointer-events:auto}
+  .reward-popup{
+    background:linear-gradient(135deg,#1e1b4b,#312e81);border:2px solid rgba(255,230,109,.3);
+    border-radius:28px;padding:40px;text-align:center;max-width:380px;width:90%;
+    transform:scale(.7);transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+    box-shadow:0 20px 60px rgba(0,0,0,.5);
+  }
+  .reward-overlay.show .reward-popup{transform:scale(1)}
+  .reward-popup .reward-icon{font-size:80px;animation:rewardFloat 2s ease-in-out infinite alternate}
+  @keyframes rewardFloat{0%{transform:translateY(0)}100%{transform:translateY(-10px)}}
+  .reward-popup h3{font-size:28px;margin:15px 0 8px;color:var(--yellow)}
+  .reward-popup p{font-size:18px;color:#ccc;line-height:1.5}
+  .reward-popup button{
+    margin-top:20px;padding:14px 40px;border:none;border-radius:50px;
+    background:linear-gradient(135deg,var(--yellow),var(--orange));color:#1a1145;
+    font-size:18px;font-weight:800;font-family:inherit;cursor:pointer;
+    transition:transform .2s;
+  }
+  .reward-popup button:hover{transform:scale(1.08)}
+
   /* Confetti */
   .confetti{position:fixed;top:-10px;z-index:9999;pointer-events:none;font-size:24px;animation:fall 2.5s linear forwards}
   @keyframes fall{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
@@ -213,6 +281,8 @@
   @media(max-width:600px){
     .compare-num{font-size:44px;padding:10px 20px}
     .math-item{font-size:28px}
+    .reward-bar{gap:10px;padding:10px 15px}
+    .reward-badge{width:36px;height:36px;font-size:20px}
   }
 </style>
 </head>
@@ -222,6 +292,32 @@
   <h1>🧮 Học Toán Vui Vẻ 🎉</h1>
   <p>Dành cho bé từ 3 - 5 tuổi 🧒👧</p>
 </header>
+
+<div class="reward-bar">
+  <div class="reward-total">🏆 Tổng điểm: <span id="globalScore">0</span></div>
+  <div class="progress-wrap">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    <div class="progress-marks">
+      <div class="progress-mark" style="left:33.3%"></div>
+      <div class="progress-mark" style="left:66.6%"></div>
+    </div>
+  </div>
+  <div class="reward-items">
+    <div class="reward-badge locked" id="rw5" title="5 điểm → Ngôi Sao"><div class="reward-ring"></div>⭐</div>
+    <div class="reward-badge locked" id="rw10" title="10 điểm → Huy Hiệu"><div class="reward-ring"></div>🏅</div>
+    <div class="reward-badge locked" id="rw15" title="15 điểm → Quà Tặng"><div class="reward-ring"></div>🎁</div>
+  </div>
+</div>
+
+<!-- Reward Popup -->
+<div class="reward-overlay" id="rewardOverlay">
+  <div class="reward-popup">
+    <div class="reward-icon" id="rewardIcon"></div>
+    <h3 id="rewardTitle"></h3>
+    <p id="rewardMsg"></p>
+    <button onclick="closeReward()">🎉 Tiếp tục chơi!</button>
+  </div>
+</div>
 
 <div class="tabs">
   <button class="tab-btn active" onclick="showTab('count')">🔢 Đếm Số</button>
@@ -394,7 +490,7 @@ function countType2(){
       if(answered)return;answered=true;cntTotal++;
       if(btn.dataset.v===answer){
         btn.style.borderColor='#22c55e';btn.style.background='rgba(34,197,94,.15)';
-        cntScore++;sfxHappy();confetti();
+        cntScore++;sfxHappy();confetti();addGlobalScore();
         speak(`Đúng rồi! Nhóm ${answer} có nhiều hơn!`);
       } else {
         btn.style.borderColor='#ef4444';btn.style.background='rgba(239,68,68,.1)';
@@ -437,7 +533,7 @@ function countType3(){
     btn.onclick=()=>{
       if(answered)return;answered=true;cntTotal++;
       if(+btn.dataset.v===target){
-        btn.classList.add('correct');cntScore++;sfxHappy();confetti();
+        btn.classList.add('correct');cntScore++;sfxHappy();confetti();addGlobalScore();
         speak('Chính xác!');
       } else {
         btn.classList.add('wrong');sfxWrong();
@@ -456,7 +552,7 @@ function bindCountAnswer(area, answer){
     b.onclick=()=>{
       if(answered) return; answered=true; cntTotal++;
       if(+b.dataset.v===answer){
-        b.classList.add('correct');cntScore++;sfxHappy();confetti();
+        b.classList.add('correct');cntScore++;sfxHappy();confetti();addGlobalScore();
         speak('Giỏi lắm!');
       } else {
         b.classList.add('wrong');sfxWrong();
@@ -599,7 +695,7 @@ function bindMathChoice(area, type, answer){
         if(isAdd){addScore++}else{subScore++}
         btn.classList.add('correct');
         fb.textContent='🎉 Đúng rồi! Giỏi quá!';fb.style.color='#22c55e';
-        sfxHappy();confetti();
+        sfxHappy();confetti();addGlobalScore();
       } else {
         btn.classList.add('wrong');
         fb.textContent=`❌ Sai rồi! Đáp án là ${answer}`;fb.style.color='#f87171';
@@ -672,7 +768,7 @@ function newShapeQuiz(){
     btn.onclick=()=>{
       if(answered)return;answered=true;shapeTotal++;
       if(btn.dataset.v===vn){
-        btn.classList.add('correct');shapeScore++;sfxHappy();confetti();
+        btn.classList.add('correct');shapeScore++;sfxHappy();confetti();addGlobalScore();
         speak(`Đúng rồi! Đây là ${vn}`);
         speakEn(en);
       } else {
@@ -764,7 +860,7 @@ function compareType3(){
     btn.onclick=()=>{
       if(answered)return;answered=true;cmpTotal++;
       if(+btn.dataset.v===answer){
-        btn.classList.add('correct');cmpScore++;sfxHappy();confetti();
+        btn.classList.add('correct');cmpScore++;sfxHappy();confetti();addGlobalScore();
         speak(`Đúng rồi! Số ${isBiggest?'lớn nhất':'nhỏ nhất'} là ${answer}`);
       } else {
         btn.classList.add('wrong');sfxWrong();
@@ -784,7 +880,7 @@ function bindCompareAnswer(area, correct, desc){
     btn.onclick=()=>{
       if(answered)return;answered=true;cmpTotal++;
       if(btn.dataset.v===correct){
-        btn.classList.add('correct');cmpScore++;sfxHappy();confetti();
+        btn.classList.add('correct');cmpScore++;sfxHappy();confetti();addGlobalScore();
         speak('Chính xác!');
       } else {
         btn.classList.add('wrong');sfxWrong();
@@ -899,7 +995,7 @@ function patternType3(){
     btn.onclick=()=>{
       if(answered)return;answered=true;patTotal++;
       if(btn.dataset.v===answer){
-        btn.classList.add('correct');patScore++;sfxHappy();confetti();
+        btn.classList.add('correct');patScore++;sfxHappy();confetti();addGlobalScore();
         speak('Tuyệt vời!');
         document.querySelector('.pattern-blank').textContent=answer;
         document.querySelector('.pattern-blank').style.fontSize='28px';
@@ -921,7 +1017,7 @@ function bindPatternAnswer(area, answer){
     btn.onclick=()=>{
       if(answered)return;answered=true;patTotal++;
       if(+btn.dataset.v===answer){
-        btn.classList.add('correct');patScore++;sfxHappy();confetti();
+        btn.classList.add('correct');patScore++;sfxHappy();confetti();addGlobalScore();
         speak('Tuyệt vời!');
         document.querySelector('.pattern-blank').textContent=answer;
         document.querySelector('.pattern-blank').style.color='#22c55e';
@@ -935,6 +1031,49 @@ function bindPatternAnswer(area, answer){
       setTimeout(newPattern,2000);
     };
   });
+}
+
+// ===== REWARD SYSTEM =====
+let globalScore=0;
+const rewardMilestones=[
+  {pts:5,  id:'rw5',  icon:'⭐', title:'Ngôi Sao Toán Học!', msg:'Bé đã đạt 5 điểm!<br>Thưởng một Ngôi Sao sáng lấp lánh! ✨', sound:[523,659,784,1047]},
+  {pts:10, id:'rw10', icon:'🏅', title:'Huy Hiệu Vàng!', msg:'Bé đã đạt 10 điểm!<br>Thưởng Huy Hiệu Vàng siêu đẹp! 🌟', sound:[523,659,784,1047,1319]},
+  {pts:15, id:'rw15', icon:'🎁', title:'Quà Tặng Đặc Biệt!', msg:'Bé đã đạt 15 điểm!<br>Mở quà bất ngờ nào! 🎊🥳🎉', sound:[523,587,659,784,880,1047,1319]},
+];
+const unlockedRewards=new Set();
+
+function addGlobalScore(){
+  globalScore++;
+  document.getElementById('globalScore').textContent=globalScore;
+  // Update progress bar (max 15)
+  const pct=Math.min(globalScore/15*100,100);
+  document.getElementById('progressFill').style.width=pct+'%';
+  // Check milestones
+  for(const rw of rewardMilestones){
+    if(globalScore===rw.pts && !unlockedRewards.has(rw.pts)){
+      unlockedRewards.add(rw.pts);
+      const el=document.getElementById(rw.id);
+      el.classList.remove('locked');
+      el.classList.add('unlocked');
+      setTimeout(()=>showRewardPopup(rw),600);
+    }
+  }
+}
+
+function showRewardPopup(rw){
+  document.getElementById('rewardIcon').textContent=rw.icon;
+  document.getElementById('rewardTitle').textContent=rw.title;
+  document.getElementById('rewardMsg').innerHTML=rw.msg;
+  document.getElementById('rewardOverlay').classList.add('show');
+  // Play reward fanfare
+  rw.sound.forEach((f,i)=>setTimeout(()=>tone(f,.2),i*120));
+  // Big confetti burst
+  for(let i=0;i<3;i++) setTimeout(confetti,i*400);
+  speak(rw.title);
+}
+
+function closeReward(){
+  document.getElementById('rewardOverlay').classList.remove('show');
 }
 
 // ===== INIT =====
