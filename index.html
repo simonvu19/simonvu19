@@ -678,14 +678,14 @@ function countType2(){
       if(btn.dataset.v===answer){
         btn.style.borderColor='#22c55e';btn.style.background='rgba(34,197,94,.15)';
         cntScore++;sfxHappy();confetti();addGlobalScore();fairyReact(true);resetFairyIdle();
-        speak(`Đúng rồi! Nhóm ${answer} có nhiều hơn!`);
+        playAudio('dungroi.mp3');
       } else {
         btn.style.borderColor='#ef4444';btn.style.background='rgba(239,68,68,.1)';
         sfxWrong();fairyReact(false);resetFairyIdle();
         area.querySelectorAll('.group-pick').forEach(x=>{
           if(x.dataset.v===answer){x.style.borderColor='#22c55e';x.style.background='rgba(34,197,94,.15)'}
         });
-        speak(`Sai rồi! Nhóm ${answer} mới nhiều hơn`);
+        playAudio('srdayla.mp3');
       }
       updateCountScore();
       setTimeout(newCount,2000);
@@ -721,11 +721,11 @@ function countType3(){
       if(answered)return;answered=true;cntTotal++;
       if(+btn.dataset.v===target){
         btn.classList.add('correct');cntScore++;sfxHappy();confetti();addGlobalScore();fairyReact(true);resetFairyIdle();
-        speak('Chính xác!');
+        playAudio('sairoi.mp3');
       } else {
         btn.classList.add('wrong');sfxWrong();fairyReact(false);resetFairyIdle();
         area.querySelectorAll('.group-match').forEach(x=>{if(+x.dataset.v===target)x.classList.add('correct')});
-        speak(`Đáp án đúng là nhóm có ${target} ${em}`);
+        playAudio('srdayla.mp3');
       }
       updateCountScore();
       setTimeout(newCount,1800);
@@ -740,11 +740,11 @@ function bindCountAnswer(area, answer){
       if(answered) return; answered=true; cntTotal++;
       if(+b.dataset.v===answer){
         b.classList.add('correct');cntScore++;sfxHappy();confetti();addGlobalScore();fairyReact(true);resetFairyIdle();
-        speak('Giỏi lắm!');
+        playAudio('chinhxac.mp3');
       } else {
         b.classList.add('wrong');sfxWrong();fairyReact(false);resetFairyIdle();
         area.querySelectorAll('.count-opt').forEach(x=>{if(+x.dataset.v===answer)x.classList.add('correct')});
-        speak(`Đáp án đúng là ${answer}`);
+        playAudio('dapandung.mp3');
       }
       updateCountScore();
       setTimeout(newCount,1800);
@@ -1262,7 +1262,16 @@ function showRewardPopup(rw){
 function closeReward(){
   document.getElementById('rewardOverlay').classList.remove('show');
 }
-
+// Hàm phát file mp3
+function playAudio(fileName) {
+  // Đường dẫn tương đối tính từ file index.html
+  const audioPath = `audio/${fileName}`; 
+  const audio = new Audio(audioPath);
+  
+  audio.play().catch(e => {
+    console.log("Trình duyệt chặn tự động phát hoặc thiếu file:", e);
+  });
+}
 // ===== INIT =====
 buildShapesGallery();
 newCount();
