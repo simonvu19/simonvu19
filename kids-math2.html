@@ -459,11 +459,41 @@ function speak(t){
   const u=new SpeechSynthesisUtterance(t);u.lang='vi-VN';u.rate=.9;u.pitch=1.2;
   speechSynthesis.cancel();speechSynthesis.speak(u);
 }
-function speakEn(t){
-  if(!window.speechSynthesis) return;
-  const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.85;u.pitch=1.2;
-  speechSynthesis.cancel();speechSynthesis.speak(u);
+function speak(t) {
+  if (!window.speechSynthesis) return;
+  
+  // Hủy các yêu cầu đọc đang dang dở
+  speechSynthesis.cancel();
+
+  const u = new SpeechSynthesisUtterance(t);
+  
+  // Lấy tất cả giọng nói có trên thiết bị
+  const voices = speechSynthesis.getVoices();
+  
+  // Tìm giọng Tiếng Việt (vi-VN)
+  // Ưu tiên giọng của Google trên Android vì nó khá tự nhiên
+  let vietnameseVoice = voices.find(v => v.lang === 'vi-VN' && v.name.includes('Google'));
+  
+  // Nếu không có giọng Google, tìm bất cứ giọng Tiếng Việt nào
+  if (!vietnameseVoice) {
+    vietnameseVoice = voices.find(v => v.lang === 'vi-VN' || v.lang.includes('vi_VN'));
+  }
+
+  if (vietnameseVoice) {
+    u.voice = vietnameseVoice;
+  }
+
+  u.lang = 'vi-VN';
+  u.rate = 0.9;  // Tốc độ đọc (0.1 đến 10)
+  u.pitch = 1.2; // Độ cao của giọng (0 đến 2)
+  
+  speechSynthesis.speak(u);
 }
+
+// Quan trọng: Chrome và một số trình duyệt cần nạp danh sách giọng nói bất đồng bộ
+window.speechSynthesis.onvoiceschanged = () => {
+  console.log("Đã nạp danh sách giọng nói hệ thống");
+};
 
 function confetti(){
   const es=['🎉','🌟','⭐','🎊','🎈','✨','💫','🥳','💖','🎆'];
