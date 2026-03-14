@@ -956,12 +956,12 @@ function newShapeQuiz(){
       if(answered)return;answered=true;shapeTotal++;
       if(btn.dataset.v===vn){
         btn.classList.add('correct');shapeScore++;sfxHappy();confetti();addGlobalScore();fairyReact(true);resetFairyIdle();
-        speak(`Đúng rồi! Đây là ${vn}`);
+        playAudio('drdayla.mp3');
         speakEn(en);
       } else {
         btn.classList.add('wrong');sfxWrong();fairyReact(false);resetFairyIdle();
         g.querySelectorAll('.count-opt').forEach(x=>{if(x.dataset.v===vn)x.classList.add('correct')});
-        speak(`Sai rồi! Đây là ${vn}`);
+        playAudio('srdayla.mp3');
       }
       document.getElementById('shapeFb').textContent=`${em} = ${vn} (${en})`;
       setTimeout(newShapeQuiz,2000);
@@ -1048,11 +1048,11 @@ function compareType3(){
       if(answered)return;answered=true;cmpTotal++;
       if(+btn.dataset.v===answer){
         btn.classList.add('correct');cmpScore++;sfxHappy();confetti();addGlobalScore();fairyReact(true);resetFairyIdle();
-        speak(`Đúng rồi! Số ${isBiggest?'lớn nhất':'nhỏ nhất'} là ${answer}`);
+        playAudio('dungroi.mp3');
       } else {
         btn.classList.add('wrong');sfxWrong();fairyReact(false);resetFairyIdle();
         area.querySelectorAll('.compare-btn').forEach(x=>{if(+x.dataset.v===answer)x.classList.add('correct')});
-        speak(`Sai rồi! Đáp án là ${answer}`);
+        playAudio('sairoi.mp3');
       }
       document.getElementById('cmpScore').textContent=cmpScore;
       document.getElementById('cmpTotal').textContent=cmpTotal;
@@ -1068,11 +1068,11 @@ function bindCompareAnswer(area, correct, desc){
       if(answered)return;answered=true;cmpTotal++;
       if(btn.dataset.v===correct){
         btn.classList.add('correct');cmpScore++;sfxHappy();confetti();addGlobalScore();fairyReact(true);resetFairyIdle();
-        speak('Chính xác!');
+        playAudio('chinhxac.mp3');
       } else {
         btn.classList.add('wrong');sfxWrong();fairyReact(false);resetFairyIdle();
         area.querySelectorAll('.compare-btn').forEach(x=>{if(x.dataset.v===correct)x.classList.add('correct')});
-        speak(`Đáp án đúng là ${desc}`);
+        playAudio('dapandung.mp3');
       }
       document.getElementById('cmpScore').textContent=cmpScore;
       document.getElementById('cmpTotal').textContent=cmpTotal;
@@ -1183,13 +1183,13 @@ function patternType3(){
       if(answered)return;answered=true;patTotal++;
       if(btn.dataset.v===answer){
         btn.classList.add('correct');patScore++;sfxHappy();confetti();addGlobalScore();fairyReact(true);resetFairyIdle();
-        speak('Tuyệt vời!');
+        playAudio('tuyetvoi.mp3');
         document.querySelector('.pattern-blank').textContent=answer;
         document.querySelector('.pattern-blank').style.fontSize='28px';
       } else {
         btn.classList.add('wrong');sfxWrong();fairyReact(false);resetFairyIdle();
         area.querySelectorAll('.pattern-choice').forEach(x=>{if(x.dataset.v===answer)x.classList.add('correct')});
-        speak(`Đáp án là ${answer}`);
+        playAudio('dapandung.mp3');
       }
       document.getElementById('patScore').textContent=patScore;
       document.getElementById('patTotal').textContent=patTotal;
@@ -1205,13 +1205,13 @@ function bindPatternAnswer(area, answer){
       if(answered)return;answered=true;patTotal++;
       if(+btn.dataset.v===answer){
         btn.classList.add('correct');patScore++;sfxHappy();confetti();addGlobalScore();fairyReact(true);resetFairyIdle();
-        speak('Tuyệt vời!');
+        playAudio('tuyetvoi.mp3');
         document.querySelector('.pattern-blank').textContent=answer;
         document.querySelector('.pattern-blank').style.color='#22c55e';
       } else {
         btn.classList.add('wrong');sfxWrong();fairyReact(false);resetFairyIdle();
         area.querySelectorAll('.pattern-choice').forEach(x=>{if(+x.dataset.v===answer)x.classList.add('correct')});
-        speak(`Đáp án là ${answer}`);
+        playAudio('dapandung.mp3');
       }
       document.getElementById('patScore').textContent=patScore;
       document.getElementById('patTotal').textContent=patTotal;
